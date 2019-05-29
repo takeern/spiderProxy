@@ -4,10 +4,12 @@ import (
 	"fmt"
 	"net/http"
 	"io/ioutil"
+	"crypto/tls"
+	"net/url"
 )
 
 func searchBook(bookName string) (resHtml string, err error) {
-	url := "https://www.ixdzs.com/bsearch?q=" + bookName
+	url := "https://www.ixdzs.com/bsearch?q=" + url.QueryEscape(bookName)
 	res, err := http.Get(url)
 	if err != nil {
 		fmt.Println("err", err.Error())
@@ -18,6 +20,8 @@ func searchBook(bookName string) (resHtml string, err error) {
 }
 
 func main() {
+	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
+
 	bookName := "大道朝天"
 	Body, err := searchBook(bookName)
 	if err != nil {
