@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package spider;
+
+service Spider {
+    rpc getBookNumber (GetBookNumberReq) returns (GetBookNumberResp);
+    rpc getBookList (GetBookListReq) returns (GetBookListResp);
+    rpc getBookData (GetBookDataReq) returns (GetBookDataResp);
+    rpc downloadBook (DownloadBookReq) returns (DownloadBookResp);
+}
+
+message GetBookNumberReq {
+    repeated BookDesc BooksDesc = 1;
+}
+
+message BookDesc {
+    string BookName = 1;
+    string BookNumber = 2;
+    bool BookState = 3;
+    string BookIntro = 4;
+}
