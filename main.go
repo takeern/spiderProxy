@@ -9,7 +9,7 @@ import (
 )
 
 func searchBook(bookName string) (resHtml string, err error) {
-	url := "https://www.ixdzs.com/bsearch?q=" + url.QueryEscape(bookName)
+	url := "https://www.aixdzs.com/bsearch?q=" + url.QueryEscape(bookName)
 	res, err := http.Get(url)
 	if err != nil {
 		fmt.Println("err", err.Error())
