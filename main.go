@@ -1,8 +1,12 @@
 package main
 
 import (
-	"fmt"
+	"net"
+	"log"
+	"google.golang.org/grpc"
 
+	pb "spiderProxy/interval/grpc"
+	// "spiderProxy/interval/modal"
 	"spiderProxy/interval/dao"
 )
 
@@ -51,20 +55,32 @@ import (
 // 	return resp, nil
 // }
 
-func main() {
+// func main() {
 
-	bookName := "大"
-	res, err := dao.GetBookDesc(bookName)
+// 	bookName := "大"
+// 	res, err := dao.GetBookDesc(bookName)
+// 	if err != nil {
+// 		fmt.Println(err)
+// 	}
+// 	// res, err1 := getBookDesc(html)
+// 	// if err1 != nil {
+// 	// 	fmt.Println(err1)
+// 	// }
+// 	// fmt.Println("%+v\n", res.BooksDesc)
+// 	for index, item := range res.BooksDesc {
+// 		fmt.Printf("%+v\n", index)
+// 		fmt.Printf("%+v\n", item)
+// 	}
+// }
+
+func main() {
+	lis, err := net.Listen("tcp", ":2333")
 	if err != nil {
-		fmt.Println(err)
+		log.Fatalf("failed to listen: %v", err)
 	}
-	// res, err1 := getBookDesc(html)
-	// if err1 != nil {
-	// 	fmt.Println(err1)
-	// }
-	// fmt.Println("%+v\n", res.BooksDesc)
-	for index, item := range res.BooksDesc {
-		fmt.Printf("%+v\n", index)
-		fmt.Printf("%+v\n", item)
-	}
+	s := grpc.NewServer()
+	pb.RegisterBookServer(s, &dao.Server{})
+	if err := s.Serve(lis); err != nil {
+        log.Fatalf("failed to serve: %v", err)
+    }
 }

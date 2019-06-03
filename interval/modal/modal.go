@@ -10,3 +10,5 @@ const (
 	GETBOOKDATA
 	GETBOOKALLDATA
 )
+
+type Server struct {}

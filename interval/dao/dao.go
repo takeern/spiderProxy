@@ -8,10 +8,13 @@ import(
 	"errors"
 	"net/http"
 	"fmt"
+	"context"
 
 	"spiderProxy/interval/modal"
 	pb "spiderProxy/interval/grpc"
 )
+
+type Server struct{}
 
 type BookDesc struct {
 	BookName             string   `protobuf:"bytes,1,opt,name=BookName,proto3" json:"BookName,omitempty"`
@@ -48,10 +51,10 @@ func getHtml(url string, times int) (string, error) {
 	return string(Body), err
 } 
 
-func GetBookDesc(bookName string) (pb.GetBookDescResp, error) {
-	url := "https://www.aixdzs.com/bsearch?q=" + url.QueryEscape(bookName)
+func (s *Server) GetBookDesc(ctx context.Context, req *pb.GetBookDescReq) (*pb.GetBookDescResp, error) {
+	url := "https://www.aixdzs.com/bsearch?q=" + url.QueryEscape(req.BookName)
 	html, err := getHtml(url, 0)
-	var resp pb.GetBookDescResp
+	var resp *pb.GetBookDescResp
 
 	if (len(html) == 0) {
 		return resp, errors.New("string length = 0")
