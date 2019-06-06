@@ -10,7 +10,6 @@ import(
 	"fmt"
 	"context"
 	"strings"
-	"encoding/binary"
 
 	"spiderProxy/interval/modal"
 	pb "spiderProxy/interval/serve/grpc"
@@ -61,7 +60,7 @@ func (s *Server) GetBookList(ctx context.Context, req *pb.GetBookListReq) (*pb.G
 	for _, param := range params {
 		resp.BookList = append(resp.BookList, &pb.BookChapter{
 			Href: string(param[1]),
-			Length: int32(binary.BigEndian.Uint64(param[2])),
+			Length: string(param[2]),
 			Title: string(param[3]),
 		})
 	}
