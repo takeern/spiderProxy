@@ -186,16 +186,19 @@ func GetBookList(BookNumber string) ([][][]byte, error) {
 
 func DownloadBook(url string, times int) (*zip.Reader, error) {
 	var reader *zip.Reader
-	if (times > 3) {
-		return reader, errors.New("try many times")
-	}
+	reader = new(zip.Reader)
 	res, err := http.Get(url)
 	defer res.Body.Close()
-	if err != nil {
-		fmt.Println("http err", err.Error())
-		times ++
-		DownloadBook(url, times)
-	}
+	// if (times > 3) {
+	// 	return reader, errors.New("try many times")
+	// }
+	// res, err := http.Get(url)
+	// defer res.Body.Close()
+	// if err != nil {
+	// 	fmt.Println("http err", err.Error())
+	// 	times ++
+	// 	DownloadBook(url, times)
+	// }
 	content_zipped, _ := ioutil.ReadAll(res.Body)
 
 	reader, _ = zip.NewReader(bytes.NewReader(content_zipped), int64(len(content_zipped)))
