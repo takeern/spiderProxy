@@ -74,9 +74,8 @@ func (s *Server) GetBookList(ctx context.Context, req *pb.GetBookListReq) (*pb.G
 }
 
 func (s *Server) DownloadBook(req *pb.DownloadBookReq, stream pb.Book_DownloadBookServer) error {
-	log.Println(req.BookNumber)
 	splitBookNumber := strings.Split(req.BookNumber, "/")
-	url := modal.DESC_URL + "down?id=" +splitBookNumber[3] + "&p=1"
+	url := modal.SPIDER_URL + "down?id=" +splitBookNumber[3] + "&p=1"
 	
 	reader, err := DownloadBook(url, 0)
 	log.Print(reader, err)
@@ -188,8 +187,6 @@ func GetBookList(BookNumber string) ([][][]byte, error) {
 func DownloadBook(url string, times int) (*zip.Reader, error) {
 	var reader *zip.Reader
 
-	res, err := http.Get(url)
-	defer res.Body.Close()
 	if (times > 3) {
 		return reader, errors.New("try many times")
 	}
@@ -201,8 +198,9 @@ func DownloadBook(url string, times int) (*zip.Reader, error) {
 		DownloadBook(url, times)
 	}
 	content_zipped, _ := ioutil.ReadAll(res.Body)
-	log.Print(content_zipped)
-	reader, _ = zip.NewReader(bytes.NewReader(content_zipped), int64(len(content_zipped)))
-
+	reader, err = zip.NewReader(bytes.NewReader(content_zipped), int64(len(content_zipped)))
+	if err != nil {
+		log.Fatal(err)
+	}
 	return reader, err
 }
