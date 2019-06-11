@@ -21,31 +21,3 @@ func main() {
         log.Fatalf("failed to serve: %v", err)
 	}
 }
-
-// func main() {
-// 	splitBookNumber := strings.Split("/d/179/179082/", "/")
-// 	url := modal.SPIDER_URL + "down?id=" +splitBookNumber[3] + "&p=1"
-// 	log.Printf(url)
-// 	reader, err := dao.DownloadBook(url, 0)
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
-
-// 	log.Print("reader:", reader)
-
-// 	for _, file := range reader.File {
-// 		rc, err := file.Open()
-// 		if err != nil {
-// 			log.Fatal(err)
-// 		}
-// 		for {
-// 			buf := make([]byte, 1024)
-// 			_, err = rc.Read(buf)
-// 			log.Print(buf)
-// 			if err != nil {
-// 				log.Println(err)
-// 				break
-// 			}
-// 		}
-// 	}
-// }

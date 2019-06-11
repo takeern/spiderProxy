@@ -89,7 +89,7 @@ func (s *Server) DownloadBook(req *pb.DownloadBookReq, stream pb.Book_DownloadBo
 			log.Fatal(err)
 		}
 		for {
-			buf := make([]byte, 1024)
+			buf := make([]byte, 1024 * 100)
 			_, err = rc.Read(buf)
 			if err != nil {
 				log.Println(err)
@@ -99,7 +99,6 @@ func (s *Server) DownloadBook(req *pb.DownloadBookReq, stream pb.Book_DownloadBo
 			stream.Send(&pb.DownloadBookResp{
 				BookData: buf,
 			})
-			log.Println("send", len(buf))
 		}
 	}
 	return nil
