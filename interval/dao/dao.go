@@ -10,6 +10,9 @@ import(
 	"fmt"
 	"context"
 	"strings"
+	"archive/zip"
+	"log"
+	"bytes"
 
 	"spiderProxy/interval/modal"
 	pb "spiderProxy/interval/serve/grpc"
@@ -68,6 +71,34 @@ func (s *Server) GetBookList(ctx context.Context, req *pb.GetBookListReq) (*pb.G
 	resp.BookNumber = req.BookNumber
 
 	return resp, nil
+}
+
+func (s *Server) DownloadBook(req *pb.DownloadBookReq, stream pb.Book_DownloadBookServer) (error) {
+	splitBookNumber := strings.Split(req.BookNumber, "/")
+	url := modal.DESC_URL + "down?id=" +splitBookNumber[3] + "&p=1"
+	
+	reader, err := DownloadBook(url, 0)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for _, file := range reader.File {
+		rc, err := file.Open()
+		if err != nil {
+			log.Fatal(err)
+		}
+		buf := make([]byte, 1024)
+		_, err = rc.Read(buf)
+		if err != nil {
+			log.Println(err)
+			break
+		}
+
+		stream.Send(&pb.DownloadBookResp{
+			BookData: buf,
+		})
+	}
+	return nil
 }
 
 // func getUrl (type string, url string)
@@ -150,4 +181,23 @@ func GetBookList(BookNumber string) ([][][]byte, error) {
 	re := regexp.MustCompile(`<li class="chapter"><a href="([\s\S]{1,}?)"[\s]?title="字数:([\d]{1,}?)">(.{1,}?)(<\/a)`)
 	params = re.FindAllSubmatch([]byte(html), -1)
 	return params, nil
+}
+
+func DownloadBook(url string, times int) (*zip.Reader, error) {
+	var reader *zip.Reader
+	if (times > 3) {
+		return reader, errors.New("try many times")
+	}
+	res, err := http.Get(url)
+	defer res.Body.Close()
+	if err != nil {
+		fmt.Println("http err", err.Error())
+		times ++
+		DownloadBook(url, times)
+	}
+	content_zipped, _ := ioutil.ReadAll(res.Body)
+
+	reader, _ = zip.NewReader(bytes.NewReader(content_zipped), int64(len(content_zipped)))
+
+	return reader, err
 }
