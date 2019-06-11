@@ -79,6 +79,7 @@ func (s *Server) DownloadBook(req *pb.DownloadBookReq, stream pb.Book_DownloadBo
 	url := modal.DESC_URL + "down?id=" +splitBookNumber[3] + "&p=1"
 	
 	reader, err := DownloadBook(url, 0)
+	log.Print(reader, err)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -186,21 +187,21 @@ func GetBookList(BookNumber string) ([][][]byte, error) {
 
 func DownloadBook(url string, times int) (*zip.Reader, error) {
 	var reader *zip.Reader
-	reader = new(zip.Reader)
+
 	res, err := http.Get(url)
 	defer res.Body.Close()
-	// if (times > 3) {
-	// 	return reader, errors.New("try many times")
-	// }
-	// res, err := http.Get(url)
-	// defer res.Body.Close()
-	// if err != nil {
-	// 	fmt.Println("http err", err.Error())
-	// 	times ++
-	// 	DownloadBook(url, times)
-	// }
+	if (times > 3) {
+		return reader, errors.New("try many times")
+	}
+	res, err := http.Get(url)
+	defer res.Body.Close()
+	if err != nil {
+		fmt.Println("http err", err.Error())
+		times ++
+		DownloadBook(url, times)
+	}
 	content_zipped, _ := ioutil.ReadAll(res.Body)
-
+	log.Print(content_zipped)
 	reader, _ = zip.NewReader(bytes.NewReader(content_zipped), int64(len(content_zipped)))
 
 	return reader, err
