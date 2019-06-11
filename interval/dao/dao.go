@@ -73,7 +73,8 @@ func (s *Server) GetBookList(ctx context.Context, req *pb.GetBookListReq) (*pb.G
 	return resp, nil
 }
 
-func (s *Server) DownloadBook(req *pb.DownloadBookReq, stream pb.Book_DownloadBookServer) (error) {
+func (s *Server) DownloadBook(req *pb.DownloadBookReq, stream pb.Book_DownloadBookServer) error {
+	log.Println(req.BookNumber)
 	splitBookNumber := strings.Split(req.BookNumber, "/")
 	url := modal.DESC_URL + "down?id=" +splitBookNumber[3] + "&p=1"
 	
