@@ -33,8 +33,9 @@ func (s *Server) GetBookDesc(ctx context.Context, req *pb.GetBookDescReq) (*pb.G
 		resp.BooksDesc = append(resp.BooksDesc, &pb.BookDesc{
 			BookName: string(param[2]),
 			BookNumber: string(param[1]),
-			BookIntro: string(param[4]),
-			BookState: string(param[3]),
+			BookIntro: string(param[5]),
+			BookState: string(param[4]),
+			BookAuthor: string(param[3])
 		})
 	}
 	return resp, err
@@ -141,7 +142,7 @@ func GetBookDesc(BookName string) ([][][]byte, error) {
 		return params, err
 	}
 
-	re := regexp.MustCompile(`b_name"><a href="(.{1,}?)"[\s\S]{1,}?"_blank">(.{1,}?)<[\s\S]{1,}?p">(.{1,}?)<[\s\S]{1,}?b_intro">([\s\S]{1,}?)<`)
+	re := regexp.MustCompile(`b_name"><a href="(.{1,}?)"[^]{1,}?"_blank">(.{1,}?)<[^]{1,}?l1">[^]{1,}?"_blank">(.{1,}?)<[^]{1,}?p">(.{1,}?)<[^]{1,}?b_intro">([^]{1,}?)<`)
 	params = re.FindAllSubmatch([]byte(html), -1)
 	return params, nil
 }
@@ -181,7 +182,7 @@ func GetBookList(BookNumber string) ([][][]byte, error) {
 		return params, err
 	}
 
-	re := regexp.MustCompile(`<li class="chapter"><a href="([\s\S]{1,}?)"[\s]?title="字数:([\d]{1,}?)">(.{1,}?)(<\/a)`)
+	re := regexp.MustCompile(`<li class="chapter"><a href="([^]{1,}?)"[\s]?title="字数:([\d]{1,}?)">(.{1,}?)(<\/a)`)
 	params = re.FindAllSubmatch([]byte(html), -1)
 	return params, nil
 }
