@@ -33,8 +33,9 @@ func (s *Server) GetBookDesc(ctx context.Context, req *pb.GetBookDescReq) (*pb.G
 		resp.BooksDesc = append(resp.BooksDesc, &pb.BookDesc{
 			BookName: string(param[2]),
 			BookNumber: string(param[1]),
-			BookIntro: string(param[4]),
-			BookState: string(param[3]),
+			BookIntro: string(param[5]),
+			BookState: string(param[4]),
+			BookAuthor: string(param[3]),
 		})
 	}
 	return resp, err
