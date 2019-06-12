@@ -142,7 +142,7 @@ func GetBookDesc(BookName string) ([][][]byte, error) {
 		return params, err
 	}
 
-	re := regexp.MustCompile(`b_name"><a href="(.{1,}?)"[\s\S]{1,}?"_blank">(.{1,}?)<[\s\S]{1,}?l1">[\s\S]{1,}?"_blank">(.{1,}?)<[\s\S]{1,}?p">(.{1,}?)<[^]{1,}?b_intro">([^]{1,}?)<`)
+	re := regexp.MustCompile(`b_name"><a href="(.{1,}?)"[\s\S]{1,}?"_blank">(.{1,}?)<[\s\S]{1,}?l1">[\s\S]{1,}?"_blank">(.{1,}?)<[\s\S]{1,}?p">(.{1,}?)<[/s/S]{1,}?b_intro">([/s/S]{1,}?)<`)
 	params = re.FindAllSubmatch([]byte(html), -1)
 	return params, nil
 }
